@@ -1,4 +1,7 @@
-(function(){//Test that Pixi is working
+"use strict";
+
+(function(){
+  //Test that Pixi is working
   console.log(PIXI);
 
   //Create the renderer
