@@ -1,6 +1,7 @@
 "use strict";
 
 (function(){
+  var Container = PIXI.Container;
   //Test that Pixi is working
   console.log(PIXI);
 
@@ -19,7 +20,7 @@
   document.body.appendChild(renderer.view);
 
   //Create a container object called the `stage`
-  var stage = new PIXI.Container();
+  var stage = new Container();
 
   //Tell the `renderer` to `render` the `stage`
   renderer.render(stage);
