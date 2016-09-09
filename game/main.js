@@ -3,6 +3,7 @@
 (function(){
   var container = PIXI.Container;
   var graphics = new PIXI.Graphics();
+  var Text = PIXI.Text;
 
   //Test that Pixi is working
   console.log(PIXI);
@@ -48,5 +49,23 @@
 
     // draw a rectangle
     graphics.drawRect(tile.i*dimension, tile.j*dimension, dimension, dimension);
+
+    var numberText = new Text(tile.number,
+      {
+        fontFamily: 'Arial',
+        fontSize: 64,
+        fill: '#3498db',
+        align: 'center',
+        stroke: '#34495e',
+        strokeThickness: 5,
+        lineJoin: 'round'
+      }
+    );
+    numberText.y = (tile.i + 0.5)*dimension;
+    numberText.x = (tile.j + 0.5)*dimension;
+    numberText.anchor.x = 0.5;
+    numberText.anchor.y = 0.5;
+
+    stage.addChild(numberText);
   }
 }());
