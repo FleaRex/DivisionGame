@@ -50,9 +50,9 @@ class Frog{
     var possibleTiles = [];
     for(var column = 0; column < this.board.width; column++){
       for(var row = 0; row < this.board.height; row++){
-        if(this.tile.i in [column, column += 1] &&
-           this.tile.j in [row - 1, row, row + 1]){
-             possibleTiles.push(this.board.grid[column][row]);
+        if((this.tile.i, this.tile.j) in [(column, row-1), (column, row+1)
+          (column+1, row)]){
+            possibleTiles.push(this.board.grid[column][row]);
         }
       }
     }
