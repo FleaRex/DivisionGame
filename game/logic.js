@@ -6,6 +6,7 @@ class Tile{
     this.i = i;
     this.j = j;
     this.number = number;
+    this.active = false;
   }
 }
 
