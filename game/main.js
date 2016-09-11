@@ -4,6 +4,8 @@
   var Container = PIXI.Container;
   var graphics = new PIXI.Graphics();
   var Text = PIXI.Text;
+  var Texture = PIXI.Texture;
+  var Sprite = PIXI.Sprite;
 
   //Test that Pixi is working
   console.log(PIXI);
@@ -24,32 +26,33 @@
 
   //Create a container object called the `stage`
   var stage = new Container();
-
   stage.addChild(graphics);
+
+  var tileTexture = Texture.fromImage('TileSprite.png');
 
   var gameboard = new Gameboard([[1,2,3],[4,5,6],[7,8,9]]);
   drawGrid(gameboard);
 
   //Tell the `renderer` to `render` the `stage`
-  renderer.render(stage);
+  animate();
+
+  function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(stage);
+  }
 
   function drawGrid(board){
+    var gridContainer = new Container()
+    stage.addChild(gridContainer);
     for(var column = 0; column < board.width; column++){
       for(var row = 0; row < board.height; row++){
-        drawTile(board.grid[column][row], 100);
+        drawTile(board.grid[column][row], 100, gridContainer);
       }
     }
   }
 
-  function drawTile(tile, dimension){
-    graphics.beginFill(0xFFFF00);
-
-    // set the line style to have a width of 5 and set the color to red
-    graphics.lineStyle(1, 0xFF0000);
-
-    // draw a rectangle
-    graphics.drawRect(tile.i*dimension, tile.j*dimension, dimension, dimension);
-
+  function drawTile(tile, dimension, container){
+    var tileSprite = new Sprite(tileTexture);
     var numberText = new Text(tile.number,
       {
         fontFamily: 'Arial',
@@ -61,11 +64,13 @@
         lineJoin: 'round'
       }
     );
-    numberText.y = (tile.i + 0.5)*dimension;
-    numberText.x = (tile.j + 0.5)*dimension;
-    numberText.anchor.x = 0.5;
-    numberText.anchor.y = 0.5;
 
-    stage.addChild(numberText);
+    [tileSprite, numberText].forEach(function(tileElement){
+      tileElement.y = (tile.i + 0.5)*dimension;
+      tileElement.x = (tile.j + 0.5)*dimension;
+      tileElement.anchor.x = 0.5;
+      tileElement.anchor.y = 0.5;
+      container.addChild(tileElement);
+    })
   }
 }());
