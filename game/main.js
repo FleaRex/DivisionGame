@@ -1,7 +1,7 @@
 "use strict";
 
 (function(){
-  var container = PIXI.Container;
+  var Container = PIXI.Container;
   var graphics = new PIXI.Graphics();
   var Text = PIXI.Text;
 
@@ -23,7 +23,7 @@
   document.body.appendChild(renderer.view);
 
   //Create a container object called the `stage`
-  var stage = new container();
+  var stage = new Container();
 
   stage.addChild(graphics);
 
