@@ -30,7 +30,10 @@
 
   var tileTexture = Texture.fromImage('TileSprite.png');
 
-  var gameboard = new Gameboard([[1,2,3],[4,5,6],[7,8,9]]);
+  var gameboard = new Gameboard([[24,72,36,30],
+                                 [15,25,16,12],
+                                 [8,40,45,18],
+                                 [22,12,35,27]]);
   // drawGrid(gameboard);
 
   //Tell the `renderer` to `render` the `stage`
