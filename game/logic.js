@@ -6,38 +6,43 @@ class Tile{
     this.i = i;
     this.j = j;
     this.number = number;
-    this.active = false;
   }
 }
 
 // Eventually we're gonna want some kind of gameboard factory.
+// Want to deal with undefined.
 class Gameboard{
   constructor(numberGrid){
-    this.width = numberGrid.length;
-    this.height = numberGrid[0].length;
+    this.height = numberGrid.length;
+    this.width = numberGrid[0].length;
     this.start = new Tile(-1, -1, 0);
     this.finish = new Tile(this.width, this.height, 0);
     this.grid = new Array(numberGrid.length);
-    for(var column = 0; column < this.width; column++){
-      this.grid[column] = new Array(numberGrid.height);
-      for(var row = 0; row < this.height; row++){
-        if(numberGrid[column][row] === undefined){
+    for(var row = 0; row < this.height; row++){
+      this.grid[row] = new Array(numberGrid.height);
+      for(var column = 0; column < this.width; column++){
+        if(numberGrid[row][column] === undefined){
           continue;
         }
-        this.grid[column][row] = new Tile(column, row, numberGrid[column][row]);
+        this.grid[row][column] = new Tile(row, column, numberGrid[row][column]);
       }
     }
-    this.entry = this.grid[0];
-    this.exit = this.grid[this.width - 1];
+    this.entry = [];
+    this.exit = [];
+    for(var row = 0; row < this.height; row++){
+      this.entry.push(this.grid[row][0]);
+      this.exit.push(this.grid[row][this.width-1]);
+    }
+
   }
 
 }
 
 class Frog{
-  constructor(number, board, tile){
+  constructor(number, board){
     this.number = number;
     this.board = board;
-    this.tile = tile;
+    this.tile = board.start;
   }
 
   findPossibleSquares(){
@@ -49,14 +54,17 @@ class Frog{
     }
 
     var possibleTiles = [];
-    for(var column = 0; column < this.board.width; column++){
-      for(var row = 0; row < this.board.height; row++){
-        if((this.tile.i, this.tile.j) in [(column, row-1), (column, row+1)
-          (column+1, row)]){
-            possibleTiles.push(this.board.grid[column][row]);
-        }
+    var tilesToAdd = [[this.tile.i-1, this.tile.j],[this.tile.i, this.tile.j+1],
+                      [this.tile.i+1, this.tile.j]]
+    tilesToAdd.forEach(function(pair){
+      try{
+        possibleTiles.push(this.board.grid[pair[0]][pair[1]]);
       }
-    }
+      catch (TypeError){
+        console.log(pair[0],pair[1]);
+      }
+    }, this)
+
     if(this.tile in this.board.exit){
       possibleTiles.push(this.board.finish);
     }
