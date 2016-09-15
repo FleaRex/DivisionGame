@@ -6,7 +6,7 @@
   var Text = PIXI.Text;
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
-  var tileDimension = 100;
+  var tileDimension = 150;
   //Test that Pixi is working
   console.log(PIXI);
 
@@ -37,7 +37,7 @@
   // drawGrid(gameboard);
 
   //Tell the `renderer` to `render` the `stage`
-  var skater = new Frog(2, gameboard);
+  var skater = new Frog(6, gameboard);
   drawGrid(gameboard, tileDimension, skater);
   drawSkater(skater);
   animate();
@@ -109,6 +109,9 @@
     var tintColour = 0xA5F2F3;
     if(activeSkater.findPossibleSquares().indexOf(tile) != -1){
       tintColour = 0xD9D4AE;
+    }
+    if(activeSkater.tile == tile){
+      tintColour = 0x888888;
     }
 
     tileSprite.tint = tintColour;
