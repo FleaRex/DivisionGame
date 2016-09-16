@@ -7,10 +7,8 @@
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
   var tileDimension = 150;
-  //Test that Pixi is working
   console.log(PIXI);
 
-  //Create the renderer
   var renderer = PIXI.autoDetectRenderer(
     256, 256,
     {antialias: false, transparent: false, resolution: 1}
@@ -21,10 +19,8 @@
   renderer.autoResize = true;
   renderer.resize(window.innerWidth, window.innerHeight);
 
-  //Add the canvas to the HTML document
   document.body.appendChild(renderer.view);
 
-  //Create a container object called the `stage`
   var stage = new Container();
   stage.x = 40;
   stage.y = 40;
@@ -34,9 +30,7 @@
   var gameboard = new Gameboard([[24,72,36,30],
                                  [15,25,16,12],
                                  [8,40,45,18]]);
-  // drawGrid(gameboard);
 
-  //Tell the `renderer` to `render` the `stage`
   var skater = new Frog(6, gameboard);
   drawGrid(gameboard, tileDimension, skater);
   drawSkater(skater);
