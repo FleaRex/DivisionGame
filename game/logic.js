@@ -61,11 +61,11 @@ class Frog{
         possibleTiles.push(this.board.grid[pair[0]][pair[1]]);
       }
       catch (TypeError){
-        console.log(pair[0],pair[1]);
+        // console.log(pair[0],pair[1]);
       }
     }, this)
 
-    if(this.tile in this.board.exit){
+    if(this.board.exit.indexOf(this.tile) != -1){
       possibleTiles.push(this.board.finish);
     }
     return possibleTiles;

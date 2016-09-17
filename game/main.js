@@ -25,6 +25,8 @@
   stage.x = 40;
   stage.y = 40;
   var tileTexture = Texture.fromImage(['TileSprite.png']);
+  var startTexture = Texture.fromImage(['StartSprite.png']);
+  var finishTexture = Texture.fromImage(['FinishSprite.png']);
   var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
 
   var gameboard = new Gameboard([[24,72,36,30],
@@ -32,12 +34,15 @@
                                  [8,40,45,18]]);
 
   var skater = new Frog(6, gameboard);
-  drawGrid(gameboard, tileDimension, skater);
-  drawSkater(skater);
+  // drawGrid(gameboard, tileDimension, skater);
+  // drawSkater(skater);
   animate();
 
   function animate() {
     requestAnimationFrame(animate);
+    if(skater.tile == gameboard.end){
+      createNewGame(skater, gameboard);
+    }
     drawGrid(gameboard, tileDimension, skater);
     drawSkater(skater, tileDimension);
     renderer.render(stage);
@@ -70,7 +75,7 @@
       }
       else if(skater.tile == gameboard.finish){
         skaterElement.y = (gameboard.height * 0.5)*dimension;
-        skaterElement.x = (0.5 + gameboard.width)*dimension;
+        skaterElement.x = (1.5 + gameboard.width)*dimension;
       }
       else{
         skaterElement.y = (skater.tile.i + 0.5)*dimension;
@@ -83,12 +88,40 @@
 
   function drawGrid(board, dimension, activeSkater){
     stage.board = board;
-    var gridGraphics = new Graphics();
-    stage.addChild(gridGraphics);
-    gridGraphics.lineStyle(2, 0x000000, 1);
-    gridGraphics.beginFill(0xFFFFFF, 1);
-    gridGraphics.drawRect(0, 0, dimension, dimension*board.height);
-    gridGraphics.drawRect(dimension*(board.width + 1), 0, dimension, dimension*board.height);
+    // var gridGraphics = new Graphics();
+    // stage.addChild(gridGraphics);
+    // gridGraphics.lineStyle(2, 0x000000, 1);
+    // gridGraphics.beginFill(0xFFFFFF, 1);
+    // gridGraphics.drawRect(0, 0, dimension, dimension*board.height);
+    // gridGraphics.drawRect(dimension*(board.width + 1), 0, dimension, dimension*board.height);
+    var startSprite = new Sprite(startTexture);
+    startSprite.tile = board.start;
+    startSprite.y = (board.height)*dimension * 0.5;
+    startSprite.x = 0.5 * dimension;
+    startSprite.tint = 0x00FF00;
+    startSprite.tint = skater.findPossibleSquares().indexOf(board.start) != -1 ?
+                          0x00FF00 : 0x008800;
+
+    var finishSprite = new Sprite(finishTexture);
+    finishSprite.tile = board.finish;
+    finishSprite.y = (board.height)*dimension * 0.5;
+    finishSprite.x = (board.width + 1.5)*dimension;
+    finishSprite.tint = skater.findPossibleSquares().indexOf(board.finish) != -1 ?
+                          0x00FF00 : 0x008800;
+
+
+    [startSprite, finishSprite].forEach(function(tileElement){
+      tileElement.anchor.x = 0.5;
+      tileElement.anchor.y = 0.5;
+      tileElement.scale.x = dimension/100.0;
+      tileElement.scale.y = dimension/100.0;
+      tileElement.on('mousedown', clickTile);
+      tileElement.on('touchstart', clickTile);
+      tileElement.buttonMode = true;
+      tileElement.interactive = true;
+      stage.addChild(tileElement);
+    });
+
     for(var row = 0; row < board.height; row++){
       for(var column = 0; column < board.width; column++){
         drawTile(board.grid[row][column], dimension, activeSkater, stage);
@@ -134,20 +167,25 @@
       tileElement.scale.y = dimension/100.0;
       container.addChild(tileElement);
     })
-
-
-    function clickTile(eventData){
-      console.log("CLICK");
-      if(skater.findPossibleSquares().indexOf(this.tile) == -1){
-        console.log("Not in possible");
-        return;
-      }
-      if(this.tile.number % skater.number != 0){
-        console.log("Doesn't divide.");
-        return;
-      }
-      skater.tile = this.tile;
-    }
   }
+
+  function clickTile(eventData){
+    console.log("CLICK");
+    if(skater.findPossibleSquares().indexOf(this.tile) == -1){
+      console.log("Not in possible");
+      return;
+    }
+    if(this.tile.number % skater.number != 0){
+      console.log("Doesn't divide.");
+      return;
+    }
+    else if(this.tile == gameboard.finish){
+      console.log("WINNING");
+    }
+    skater.tile = this.tile;
+  }
+
+  function createNewGame(activeSkater, board){}
+
 
 }());
