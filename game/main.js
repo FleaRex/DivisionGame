@@ -7,7 +7,11 @@
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
   var tileDimension = 150;
+
   console.log(PIXI);
+
+  var gamemaker = new GameMaker();
+  gamemaker.createNewGame();
 
   var renderer = PIXI.autoDetectRenderer(
     256, 256,
@@ -29,28 +33,21 @@
   var finishTexture = Texture.fromImage(['FinishSprite.png']);
   var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
 
-  var gameboard = new Gameboard([[24,72,36,30],
-                                 [15,25,16,12],
-                                 [8,40,45,18]]);
-
-  var skater = new Frog(6, gameboard);
-  // drawGrid(gameboard, tileDimension, skater);
-  // drawSkater(skater);
   animate();
 
   function animate() {
     requestAnimationFrame(animate);
-    if(skater.tile == gameboard.end){
-      createNewGame(skater, gameboard);
+    if(gamemaker.skater.tile == gamemaker.gameboard.finish){
+      gamemaker.createNewGame();
     }
-    drawGrid(gameboard, tileDimension, skater);
-    drawSkater(skater, tileDimension);
+    drawGrid(gamemaker.gameboard, tileDimension);
+    drawSkater(gamemaker.skater, tileDimension);
     renderer.render(stage);
   }
 
   function drawSkater(activeSkater, dimension){
     var skaterSprite = new Sprite(skaterTexture);
-    var numberText = new Text(skater.number,
+    var numberText = new Text(gamemaker.skater.number,
       {
         fontFamily: 'Arial',
         fontSize: 44,
@@ -69,24 +66,24 @@
       skaterElement.scale.x = dimension/100.0;
       skaterElement.scale.y = dimension/100.0;
 
-      if(skater.tile == gameboard.start){
-        skaterElement.y = (gameboard.height * 0.5)*dimension;
+      if(gamemaker.skater.tile == gamemaker.gameboard.start){
+        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
         skaterElement.x = 0.5*dimension;
       }
-      else if(skater.tile == gameboard.finish){
-        skaterElement.y = (gameboard.height * 0.5)*dimension;
-        skaterElement.x = (1.5 + gameboard.width)*dimension;
+      else if(gamemaker.skater.tile == gamemaker.gameboard.finish){
+        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
+        skaterElement.x = (1.5 + gamemaker.gameboard.width)*dimension;
       }
       else{
-        skaterElement.y = (skater.tile.i + 0.5)*dimension;
-        skaterElement.x = (skater.tile.j + 1.5)*dimension;
+        skaterElement.y = (gamemaker.skater.tile.i + 0.5)*dimension;
+        skaterElement.x = (gamemaker.skater.tile.j + 1.5)*dimension;
       }
 
       stage.addChild(skaterElement);
     });
   }
 
-  function drawGrid(board, dimension, activeSkater){
+  function drawGrid(board, dimension){
     stage.board = board;
     // var gridGraphics = new Graphics();
     // stage.addChild(gridGraphics);
@@ -99,14 +96,14 @@
     startSprite.y = (board.height)*dimension * 0.5;
     startSprite.x = 0.5 * dimension;
     startSprite.tint = 0x00FF00;
-    startSprite.tint = skater.findPossibleSquares().indexOf(board.start) != -1 ?
+    startSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.start) != -1 ?
                           0x00FF00 : 0x008800;
 
     var finishSprite = new Sprite(finishTexture);
     finishSprite.tile = board.finish;
     finishSprite.y = (board.height)*dimension * 0.5;
     finishSprite.x = (board.width + 1.5)*dimension;
-    finishSprite.tint = skater.findPossibleSquares().indexOf(board.finish) != -1 ?
+    finishSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.finish) != -1 ?
                           0x00FF00 : 0x008800;
 
 
@@ -124,7 +121,7 @@
 
     for(var row = 0; row < board.height; row++){
       for(var column = 0; column < board.width; column++){
-        drawTile(board.grid[row][column], dimension, activeSkater, stage);
+        drawTile(board.grid[row][column], dimension, gamemaker.skater, stage);
       }
     }
   }
@@ -171,21 +168,20 @@
 
   function clickTile(eventData){
     console.log("CLICK");
-    if(skater.findPossibleSquares().indexOf(this.tile) == -1){
+    if(gamemaker.skater.findPossibleSquares().indexOf(this.tile) == -1){
       console.log("Not in possible");
       return;
     }
-    if(this.tile.number % skater.number != 0){
+    if(this.tile.number % gamemaker.skater.number != 0){
       console.log("Doesn't divide.");
       return;
     }
-    else if(this.tile == gameboard.finish){
+    else if(this.tile == gamemaker.gameboard.finish){
       console.log("WINNING");
     }
-    skater.tile = this.tile;
+    gamemaker.skater.tile = this.tile;
   }
 
-  function createNewGame(activeSkater, board){}
 
 
 }());
