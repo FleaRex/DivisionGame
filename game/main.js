@@ -7,10 +7,12 @@
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
   var tileDimension = 100;
-  //Test that Pixi is working
+
   console.log(PIXI);
 
-  //Create the renderer
+  var gamemaker = new GameMaker();
+  gamemaker.createNewGame();
+
   var renderer = PIXI.autoDetectRenderer(
     256, 256,
     {antialias: false, transparent: false, resolution: 1}
@@ -21,37 +23,32 @@
   renderer.autoResize = true;
   renderer.resize(window.innerWidth, window.innerHeight);
 
-  //Add the canvas to the HTML document
   document.body.appendChild(renderer.view);
 
-  //Create a container object called the `stage`
   var stage = new Container();
   stage.x = 40;
   stage.y = 40;
   var tileTexture = Texture.fromImage(['TileSprite.png']);
+  var startTexture = Texture.fromImage(['StartSprite.png']);
+  var finishTexture = Texture.fromImage(['FinishSprite.png']);
   var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
+  var brokenTexture = Texture.fromImage(['BrokenSprite.png']);
 
-  var gameboard = new Gameboard([[24,72,36,30],
-                                 [15,25,16,12],
-                                 [8,40,45,18]]);
-  // drawGrid(gameboard);
-
-  //Tell the `renderer` to `render` the `stage`
-  var skater = new Frog(2, gameboard);
-  drawGrid(gameboard, tileDimension, skater);
-  drawSkater(skater);
   animate();
 
   function animate() {
     requestAnimationFrame(animate);
-    drawGrid(gameboard, tileDimension, skater);
-    drawSkater(skater, tileDimension);
+    if(gamemaker.skater.tile == gamemaker.gameboard.finish){
+      gamemaker.createNewGame();
+    }
+    drawGrid(gamemaker.gameboard, tileDimension);
+    drawSkater(gamemaker.skater, tileDimension);
     renderer.render(stage);
   }
 
   function drawSkater(activeSkater, dimension){
     var skaterSprite = new Sprite(skaterTexture);
-    var numberText = new Text(skater.number,
+    var numberText = new Text(gamemaker.skater.number,
       {
         fontFamily: 'Arial',
         fontSize: 44,
@@ -70,64 +67,100 @@
       skaterElement.scale.x = dimension/100.0;
       skaterElement.scale.y = dimension/100.0;
 
-      if(skater.tile == gameboard.start){
-        skaterElement.y = (gameboard.height * 0.5)*dimension;
+      if(gamemaker.skater.tile == gamemaker.gameboard.start){
+        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
         skaterElement.x = 0.5*dimension;
       }
-      else if(skater.tile == gameboard.finish){
-        skaterElement.y = (gameboard.height * 0.5)*dimension;
-        skaterElement.x = (0.5 + gameboard.width)*dimension;
+      else if(gamemaker.skater.tile == gamemaker.gameboard.finish){
+        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
+        skaterElement.x = (1.5 + gamemaker.gameboard.width)*dimension;
       }
       else{
-        skaterElement.y = (skater.tile.i + 0.5)*dimension;
-        skaterElement.x = (skater.tile.j + 1.5)*dimension;
+        skaterElement.y = (gamemaker.skater.tile.i + 0.5)*dimension;
+        skaterElement.x = (gamemaker.skater.tile.j + 1.5)*dimension;
       }
 
       stage.addChild(skaterElement);
     });
   }
 
-  function drawGrid(board, dimension, activeSkater){
+  function drawGrid(board, dimension){
     stage.board = board;
-    var gridGraphics = new Graphics();
-    stage.addChild(gridGraphics);
-    gridGraphics.lineStyle(2, 0x000000, 1);
-    gridGraphics.beginFill(0xFFFFFF, 1);
-    gridGraphics.drawRect(0, 0, dimension, dimension*board.height);
-    gridGraphics.drawRect(dimension*(board.width + 1), 0, dimension, dimension*board.height);
+    var startSprite = new Sprite(startTexture);
+    startSprite.tile = board.start;
+    startSprite.y = (board.height)*dimension * 0.5;
+    startSprite.x = 0.5 * dimension;
+    startSprite.tint = 0x00FF00;
+    startSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.start) != -1 ?
+                          0x00FF00 : 0x008800;
+
+    var finishSprite = new Sprite(finishTexture);
+    finishSprite.tile = board.finish;
+    finishSprite.y = (board.height)*dimension * 0.5;
+    finishSprite.x = (board.width + 1.5)*dimension;
+    finishSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.finish) != -1 ?
+                          0x00FF00 : 0x008800;
+
+
+    [startSprite, finishSprite].forEach(function(tileElement){
+      tileElement.anchor.x = 0.5;
+      tileElement.anchor.y = 0.5;
+      tileElement.scale.x = dimension/100.0;
+      tileElement.scale.y = dimension/100.0;
+      tileElement.on('mousedown', clickTile);
+      tileElement.on('touchstart', clickTile);
+      tileElement.buttonMode = true;
+      tileElement.interactive = true;
+      stage.addChild(tileElement);
+    });
+
     for(var row = 0; row < board.height; row++){
       for(var column = 0; column < board.width; column++){
-        drawTile(board.grid[row][column], dimension, activeSkater, stage);
+        drawTile(board.grid[row][column], dimension, gamemaker.skater, stage);
       }
     }
   }
 
   function drawTile(tile, dimension, activeSkater, container){
-    var tileSprite = new Sprite(tileTexture);
-    tileSprite.tile = tile;
-    //What colour is the tile
-    var tintColour = 0xA5F2F3;
-    if(activeSkater.findPossibleSquares().indexOf(tile) != -1){
-      tintColour = 0xD9D4AE;
+    var tileSprite;
+    var textFill;
+    var textStroke;
+    if(tile.broken){
+      tileSprite = new Sprite(brokenTexture);
+      textFill = '#999999';
+      textStroke = '#333333';
     }
+    else{
+      tileSprite = new Sprite(tileTexture);
+      textFill = '#3498db';
+      textStroke = '#34495e';
+      tileSprite.tile = tile;
+      //What colour is the tile
+      var tintColour = 0xA5F2F3;
+      if(activeSkater.findPossibleSquares().indexOf(tile) != -1){
+        tintColour = 0xD9D4AE;
+      }
+      if(activeSkater.tile == tile){
+        tintColour = 0x888888;
+      }
 
-    tileSprite.tint = tintColour;
-    tileSprite.on('mousedown', clickTile);
-    tileSprite.on('touchstart', clickTile);
-    tileSprite.buttonMode = true;
-    tileSprite.interactive = true;
+      tileSprite.tint = tintColour;
+      tileSprite.on('mousedown', clickTile);
+      tileSprite.on('touchstart', clickTile);
+      tileSprite.buttonMode = true;
+      tileSprite.interactive = true;
+    }
     var numberText = new Text(tile.number,
       {
         fontFamily: 'Arial',
         fontSize: 64,
-        fill: '#3498db',
+        fill: textFill,
         align: 'center',
-        stroke: '#34495e',
+        stroke: textStroke,
         strokeThickness: 5,
         lineJoin: 'round'
       }
     );
-
     [tileSprite, numberText].forEach(function(tileElement){
       tileElement.y = (tile.i + 0.5)*dimension;
       tileElement.x = (tile.j + 1.5)*dimension;
@@ -137,20 +170,28 @@
       tileElement.scale.y = dimension/100.0;
       container.addChild(tileElement);
     })
-
-
-    function clickTile(eventData){
-      console.log("CLICK");
-      if(skater.findPossibleSquares().indexOf(this.tile) == -1){
-        console.log("Not in possible");
-        return;
-      }
-      if(this.tile.number % skater.number != 0){
-        console.log("Doesn't divide.");
-        return;
-      }
-      skater.tile = this.tile;
-    }
   }
+
+  function clickTile(eventData){
+    console.log("CLICK");
+    if(gamemaker.skater.findPossibleSquares().indexOf(this.tile) == -1){
+      console.log("Not in possible");
+      return;
+    }
+    if(this.tile.number % gamemaker.skater.number != 0){
+      console.log("Doesn't divide.");
+      gamemaker.destroyTile(this.tile);
+      return;
+    }
+    else if(this.tile == gamemaker.gameboard.finish){
+      console.log("WINNING");
+    }
+    else if(this.tile == gamemaker.gameboard.start){
+      console.log("BACK TO THE START")
+    }
+    gamemaker.skater.tile = this.tile;
+  }
+
+
 
 }());

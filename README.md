@@ -1,10 +1,8 @@
 # DivisionGame
 
-The idea is that there is a grid of numbers and numbered frogs on the left hand
-side. You give them a starting point on the grid and then they move across the
-numbers they divide towards the right hand side. The player picks a route.
+The idea is that there is a grid of numbers and a numbered skater on the left
+hand side. You pick a route across the grid of numbers that the number on the
+skater divides.
 
-## Possible extensions
-
-* Each number can only be used N times.
-* UI with drag and drop.
+To use this you will need to host a server, for instance using http-server,
+which you can get from npm. (https://www.npmjs.com/package/http-server)

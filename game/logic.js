@@ -6,6 +6,7 @@ class Tile{
     this.i = i;
     this.j = j;
     this.number = number;
+    this.broken = false;
   }
 }
 
@@ -55,18 +56,21 @@ class Frog{
 
     var possibleTiles = [];
     var tilesToAdd = [[this.tile.i-1, this.tile.j],[this.tile.i, this.tile.j+1],
-                      [this.tile.i+1, this.tile.j]]
+                      [this.tile.i, this.tile.j-1],[this.tile.i+1, this.tile.j]]
     tilesToAdd.forEach(function(pair){
       try{
         possibleTiles.push(this.board.grid[pair[0]][pair[1]]);
       }
       catch (TypeError){
-        console.log(pair[0],pair[1]);
+        // console.log(pair[0],pair[1]);
       }
     }, this)
 
-    if(this.tile in this.board.exit){
+    if(this.board.exit.indexOf(this.tile) != -1){
       possibleTiles.push(this.board.finish);
+    }
+    if(this.board.entry.indexOf(this.tile) != -1){
+      possibleTiles.push(this.board.start);
     }
     return possibleTiles;
   }
