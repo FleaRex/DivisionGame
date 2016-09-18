@@ -32,6 +32,7 @@
   var startTexture = Texture.fromImage(['StartSprite.png']);
   var finishTexture = Texture.fromImage(['FinishSprite.png']);
   var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
+  var brokenTexture = Texture.fromImage(['BrokenSprite.png']);
 
   animate();
 
@@ -85,12 +86,6 @@
 
   function drawGrid(board, dimension){
     stage.board = board;
-    // var gridGraphics = new Graphics();
-    // stage.addChild(gridGraphics);
-    // gridGraphics.lineStyle(2, 0x000000, 1);
-    // gridGraphics.beginFill(0xFFFFFF, 1);
-    // gridGraphics.drawRect(0, 0, dimension, dimension*board.height);
-    // gridGraphics.drawRect(dimension*(board.width + 1), 0, dimension, dimension*board.height);
     var startSprite = new Sprite(startTexture);
     startSprite.tile = board.start;
     startSprite.y = (board.height)*dimension * 0.5;
@@ -127,34 +122,45 @@
   }
 
   function drawTile(tile, dimension, activeSkater, container){
-    var tileSprite = new Sprite(tileTexture);
-    tileSprite.tile = tile;
-    //What colour is the tile
-    var tintColour = 0xA5F2F3;
-    if(activeSkater.findPossibleSquares().indexOf(tile) != -1){
-      tintColour = 0xD9D4AE;
+    var tileSprite;
+    var textFill;
+    var textStroke;
+    if(tile.broken){
+      tileSprite = new Sprite(brokenTexture);
+      textFill = '#999999';
+      textStroke = '#333333';
     }
-    if(activeSkater.tile == tile){
-      tintColour = 0x888888;
-    }
+    else{
+      tileSprite = new Sprite(tileTexture);
+      textFill = '#3498db';
+      textStroke = '#34495e';
+      tileSprite.tile = tile;
+      //What colour is the tile
+      var tintColour = 0xA5F2F3;
+      if(activeSkater.findPossibleSquares().indexOf(tile) != -1){
+        tintColour = 0xD9D4AE;
+      }
+      if(activeSkater.tile == tile){
+        tintColour = 0x888888;
+      }
 
-    tileSprite.tint = tintColour;
-    tileSprite.on('mousedown', clickTile);
-    tileSprite.on('touchstart', clickTile);
-    tileSprite.buttonMode = true;
-    tileSprite.interactive = true;
+      tileSprite.tint = tintColour;
+      tileSprite.on('mousedown', clickTile);
+      tileSprite.on('touchstart', clickTile);
+      tileSprite.buttonMode = true;
+      tileSprite.interactive = true;
+    }
     var numberText = new Text(tile.number,
       {
         fontFamily: 'Arial',
         fontSize: 64,
-        fill: '#3498db',
+        fill: textFill,
         align: 'center',
-        stroke: '#34495e',
+        stroke: textStroke,
         strokeThickness: 5,
         lineJoin: 'round'
       }
     );
-
     [tileSprite, numberText].forEach(function(tileElement){
       tileElement.y = (tile.i + 0.5)*dimension;
       tileElement.x = (tile.j + 1.5)*dimension;
@@ -174,10 +180,14 @@
     }
     if(this.tile.number % gamemaker.skater.number != 0){
       console.log("Doesn't divide.");
+      gamemaker.destroyTile(this.tile);
       return;
     }
     else if(this.tile == gamemaker.gameboard.finish){
       console.log("WINNING");
+    }
+    else if(this.tile == gamemaker.gameboard.start){
+      console.log("BACK TO THE START")
     }
     gamemaker.skater.tile = this.tile;
   }

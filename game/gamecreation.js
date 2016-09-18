@@ -50,4 +50,8 @@ class GameMaker{
   getRandomTimesTable(){
     return this.timesTables[Math.floor(Math.random() * this.timesTables.length)];
   }
+
+  destroyTile(tile){
+    this.gameboard.grid[tile.i][tile.j].broken = true;
+  }
 }
