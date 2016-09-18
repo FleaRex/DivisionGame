@@ -6,7 +6,7 @@
   var Text = PIXI.Text;
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
-  var tileDimension = 150;
+  var tileDimension = 100;
 
   console.log(PIXI);
 
