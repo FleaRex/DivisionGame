@@ -153,7 +153,7 @@
     var numberText = new Text(tile.number,
       {
         fontFamily: 'Arial',
-        fontSize: 64,
+        fontSize: 56,
         fill: textFill,
         align: 'center',
         stroke: textStroke,
