@@ -6,12 +6,9 @@
   var Text = PIXI.Text;
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
-  var tileDimension = 100;
+  var tileDimension = 75;
 
   console.log(PIXI);
-
-  var gamemaker = new GameMaker();
-  gamemaker.createNewGame();
 
   var renderer = PIXI.autoDetectRenderer(
     256, 256,
@@ -34,6 +31,17 @@
   var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
   var brokenTexture = Texture.fromImage(['BrokenSprite.png']);
 
+  var gamemaker = new BespokeGameMaker({'timesTables':[4,5,6,7,8,9,10,11,12],
+                                        'problemTables':[6,7,8,12],
+                                        'misconceptions':[
+                                                           [6,9,63],
+                                                           [4,6,26],
+                                                           [3,9,29],
+                                                           [8,6,84],
+                                                           [7,8,63]
+                                                         ]
+                                       });
+  gamemaker.createNewGame();
   animate();
 
   function animate() {

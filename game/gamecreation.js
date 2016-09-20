@@ -7,7 +7,7 @@ class GameMaker{
   }
 
   createNewGame(){
-    var timesTable = this.getRandomTimesTable();
+    var timesTable = this.getTimesTable();
     var grid = [];
     for(var i = 0; i < this.breadth; i++){
       grid[i] = []
@@ -65,13 +65,19 @@ class GameMaker{
   // Attempt to limit the number of accidental hits.
   getNonMultiple(number){
     var maxAttempts = 2;
-    var currentAttempt = arguments[1];
+    console.log(arguments[1]);
+    var currentAttempt = arguments[1] || 1;
     var value = this.getRandomTimesTable() * this.getRandomTimesTable();
     if((value % number != 0) || (currentAttempt >= maxAttempts)){
       return value;
-    }else {
+    }
+    else {
       return this.getNonMultiple(number, currentAttempt + 1);
     }
+  }
+
+  getTimesTable(){
+    return this.getRandomTimesTable();
   }
 
   getRandomTimesTable(){
@@ -85,12 +91,56 @@ class GameMaker{
 
 
 class BespokeGameMaker extends GameMaker{
-  // history = {timesTables:[], problemTables:[], misconceptions:[[a, b, ab]]}
+  // history = {timesTables:[], problemTables:[],
+  //            misconceptions:[[a, b, proposedab]]}
   constructor(history){
-    this.breadth = 6;
-    this.length = 8;
+    super();
     this.timesTables = history.timesTables;
     this.problemTables = history.problemTables;
+    //Maybe this ends up with some chcking they are misconceptions.
     this.misconceptions = history.misconceptions;
+  }
+
+  getMultiple(number){
+    var potential = [];
+    this.misconceptions.forEach(function(calculation){
+      if((calculation[0] == number) || (calculation[1] == number)){
+        potential.push(calculation[0]*calculation[1]);
+      }
+      if(calculation[2] % number == 0){
+        potential.push(calculation[2]);
+      }
+    });
+    if(Math.random() < potential.length * 0.05){
+      return potential[Math.floor(Math.random() * potential.length)];
+    }
+    return number * this.getRandomTimesTable();
+  }
+
+  // Attempt to limit the number of accidental hits.
+  getNonMultiple(number){
+    var potential = [];
+    this.misconceptions.forEach(function(calculation){
+      if((calculation[0] == number) || (calculation[1] == number)){
+        potential.push(calculation[2]);
+      }
+    });
+    if(Math.random() < potential.length * 0.05){
+      return potential[Math.floor(Math.random() * potential.length)];
+    }
+    return super.getNonMultiple(number, arguments[1]);
+  }
+
+  getTimesTable(){
+    if(Math.random()>0.5){
+      return this.getRandomTimesTable();
+    }
+    else{
+      return this.problemTables[Math.floor(Math.random() * this.problemTables.length)];
+    }
+  }
+
+  getRandomTimesTable(){
+    return this.timesTables[Math.floor(Math.random() * this.timesTables.length)];
   }
 }
