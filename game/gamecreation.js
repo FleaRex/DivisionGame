@@ -1,10 +1,12 @@
 class GameMaker{
   constructor(){
-    this.breadth = 4;
-    this.length = 7;
-    this.timesTables = [3,4,5,6,7,8,9,11,12];
+    this.breadth = 6;
+    this.length = 8;
+    this.timesTables = [6,7,8,9,11,12];
   }
 
+  // TODO: Move ahead one after up or down, make nonMultiple less likely
+  // to give a multiple.
   createNewGame(){
     var timesTable = this.getRandomTimesTable();
     var grid = [];
@@ -43,8 +45,15 @@ class GameMaker{
     return number * this.getRandomTimesTable();
   }
 
+  // Attempt to limit the number of accidental hits.
   getNonMultiple(number){
-    return this.getRandomTimesTable() * this.getRandomTimesTable();
+    var value = this.getRandomTimesTable() * this.getRandomTimesTable();
+    if(value % number != 0){
+      return value;
+    }
+    else{
+      return this.getRandomTimesTable() * this.getRandomTimesTable();
+    }
   }
 
   getRandomTimesTable(){
