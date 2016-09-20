@@ -55,7 +55,7 @@ class GameMaker{
 
     this.gameboard = new Gameboard(grid);
 
-    this.skater = new Frog(timesTable, this.gameboard);
+    this.skater = new Skater(timesTable, this.gameboard);
   }
 
   getMultiple(number){

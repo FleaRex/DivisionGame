@@ -39,7 +39,7 @@ class Gameboard{
 
 }
 
-class Frog{
+class Skater{
   constructor(number, board){
     this.number = number;
     this.board = board;
