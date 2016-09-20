@@ -1,5 +1,6 @@
 class GameMaker{
   constructor(){
+    // May wanna make these static.
     this.breadth = 6;
     this.length = 8;
     this.timesTables = [6,7,8,9,11,12];
@@ -63,8 +64,8 @@ class GameMaker{
 
   // Attempt to limit the number of accidental hits.
   getNonMultiple(number){
-    var maxAttempts = 4;
-    console.log(arguments[1]);
+    var maxAttempts = 2;
+    var currentAttempt = arguments[1];
     var value = this.getRandomTimesTable() * this.getRandomTimesTable();
     if((value % number != 0) || (currentAttempt >= maxAttempts)){
       return value;
@@ -79,5 +80,17 @@ class GameMaker{
 
   destroyTile(tile){
     this.gameboard.grid[tile.i][tile.j].broken = true;
+  }
+}
+
+
+class BespokeGameMaker extends GameMaker{
+  // history = {timesTables:[], problemTables:[], misconceptions:[[a, b, ab]]}
+  constructor(history){
+    this.breadth = 6;
+    this.length = 8;
+    this.timesTables = history.timesTables;
+    this.problemTables = history.problemTables;
+    this.misconceptions = history.misconceptions;
   }
 }
