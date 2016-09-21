@@ -39,7 +39,10 @@
                                                            [3,9,29],
                                                            [8,6,84],
                                                            [7,8,63]
-                                                         ]
+                                                         ],
+                                        'wrongAnswers':[[7,19],
+                                                        [7,31],
+                                                        [7,12]]
                                        });
   gamemaker.createNewGame();
   animate();
@@ -188,14 +191,17 @@
     }
     if(this.tile.number % gamemaker.skater.number != 0){
       console.log("Doesn't divide.");
+      gamemaker.wrongAnswer(this.tile);
       gamemaker.destroyTile(this.tile);
       return;
     }
-    else if(this.tile == gamemaker.gameboard.finish){
-      console.log("WINNING");
+
+    if(this.tile == gamemaker.gameboard.finish){
     }
     else if(this.tile == gamemaker.gameboard.start){
-      console.log("BACK TO THE START")
+    }
+    else{
+      gamemaker.rightAnswer(this.tile);
     }
     gamemaker.skater.tile = this.tile;
   }

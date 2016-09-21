@@ -87,18 +87,27 @@ class GameMaker{
   destroyTile(tile){
     this.gameboard.grid[tile.i][tile.j].broken = true;
   }
+
+  wrongAnswer(tile){
+    return;
+  }
+  rightAnswer(tile){
+    return;
+  }
 }
 
 
 class BespokeGameMaker extends GameMaker{
   // history = {timesTables:[], problemTables:[],
-  //            misconceptions:[[a, b, proposedab]]}
+  //            misconceptions:[[a, b, proposedab]],
+  //            wrongAnswers:[a, proposedadivides]}
   constructor(history){
     super();
     this.timesTables = history.timesTables;
     this.problemTables = history.problemTables;
     //Maybe this ends up with some chcking they are misconceptions.
     this.misconceptions = history.misconceptions;
+    this.wrongAnswers = history.wrongAnswers;
   }
 
   getMultiple(number){
@@ -125,6 +134,11 @@ class BespokeGameMaker extends GameMaker{
         potential.push(calculation[2]);
       }
     });
+    this.wrongAnswers.forEach(function(calculation){
+      if(calculation[0] == number){
+        potential.push(calculation[1]);
+      }
+    });
     if(Math.random() < potential.length * 0.05){
       return potential[Math.floor(Math.random() * potential.length)];
     }
@@ -142,5 +156,17 @@ class BespokeGameMaker extends GameMaker{
 
   getRandomTimesTable(){
     return this.timesTables[Math.floor(Math.random() * this.timesTables.length)];
+  }
+
+  wrongAnswer(tile){
+    var notIn = true;
+    this.wrongAnswers.forEach(function(answer){
+      if((answer[0] == this.skater.number) && (answer[1] == tile.number)){
+        notIn = false;
+      }
+    }, this);
+    if(notIn){
+      this.wrongAnswers.push([this.skater.number, tile.number]);
+    }
   }
 }
