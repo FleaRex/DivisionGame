@@ -197,8 +197,10 @@
     }
 
     if(this.tile == gamemaker.gameboard.finish){
+      gamemaker.toFinish();
     }
     else if(this.tile == gamemaker.gameboard.start){
+      gamemaker.toStart();
     }
     else{
       gamemaker.rightAnswer(this.tile);

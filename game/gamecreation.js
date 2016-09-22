@@ -94,8 +94,23 @@ class GameMaker{
   rightAnswer(tile){
     return;
   }
+  toStart(){
+    return;
+  }
+  tofinish(){
+    return;
+  }
 }
 
+
+class Record{
+  // dividend is on the back of skater, tileValue is int or start/finish
+  constructor(dividend, tileValue){
+    this.dividend = divident;
+    this.tileValue = tileValue;
+    this.attemptTime = Date.now();
+  }
+}
 
 class BespokeGameMaker extends GameMaker{
   // history = {timesTables:[], problemTables:[],
@@ -108,6 +123,7 @@ class BespokeGameMaker extends GameMaker{
     //Maybe this ends up with some chcking they are misconceptions.
     this.misconceptions = history.misconceptions;
     this.wrongAnswers = history.wrongAnswers;
+    this.activity = [];
   }
 
   getMultiple(number){
@@ -159,6 +175,7 @@ class BespokeGameMaker extends GameMaker{
   }
 
   wrongAnswer(tile){
+    this.activity.push(new Record(this.skater.number, tile.number));
     var notIn = true;
     this.wrongAnswers.forEach(function(answer){
       if((answer[0] == this.skater.number) && (answer[1] == tile.number)){
@@ -168,5 +185,17 @@ class BespokeGameMaker extends GameMaker{
     if(notIn){
       this.wrongAnswers.push([this.skater.number, tile.number]);
     }
+  }
+
+  rightAnswer(tile){
+    this.activity.push(new Record(this.skater.number, tile.number));
+  }
+
+  toStart(){
+    this.activity.push(new Record(this.skater.number, 'start'));
+  }
+
+  tofinish(){
+    this.activity.push(new Record(this.skater.number, 'finish'));
   }
 }
