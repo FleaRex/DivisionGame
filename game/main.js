@@ -25,11 +25,7 @@
   var stage = new Container();
   stage.x = 40;
   stage.y = 40;
-  var tileTexture = Texture.fromImage(['TileSprite.png']);
-  var startTexture = Texture.fromImage(['StartSprite.png']);
-  var finishTexture = Texture.fromImage(['FinishSprite.png']);
-  var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
-  var brokenTexture = Texture.fromImage(['BrokenSprite.png']);
+
 
   var gamemaker = new BespokeGameMaker({'timesTables':[4,5,6,7,8,9,10,11,12],
                                         'problemTables':[6,7,8,12],
@@ -44,8 +40,18 @@
                                                         [7,31],
                                                         [7,12]]
                                        });
+
+  loading();
   gamemaker.createNewGame();
   animate();
+
+  function loading(){
+    var tileTexture = Texture.fromImage(['TileSprite.png']);
+    var startTexture = Texture.fromImage(['StartSprite.png']);
+    var finishTexture = Texture.fromImage(['FinishSprite.png']);
+    var skaterTexture = Texture.fromImage(['SkaterSprite.png']);
+    var brokenTexture = Texture.fromImage(['BrokenSprite.png']);
+  }
 
   function animate() {
     requestAnimationFrame(animate);
