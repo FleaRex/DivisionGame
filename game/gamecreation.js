@@ -97,7 +97,7 @@ class GameMaker{
   toStart(){
     return;
   }
-  tofinish(){
+  toFinish(){
     return;
   }
 }
@@ -106,7 +106,7 @@ class GameMaker{
 class Record{
   // dividend is on the back of skater, tileValue is int or start/finish
   constructor(dividend, tileValue){
-    this.dividend = divident;
+    this.dividend = dividend;
     this.tileValue = tileValue;
     this.attemptTime = Date.now();
   }
@@ -195,7 +195,7 @@ class BespokeGameMaker extends GameMaker{
     this.activity.push(new Record(this.skater.number, 'start'));
   }
 
-  tofinish(){
+  toFinish(){
     this.activity.push(new Record(this.skater.number, 'finish'));
   }
 }
