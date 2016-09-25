@@ -7,7 +7,7 @@
   var Texture = PIXI.Texture;
   var Sprite = PIXI.Sprite;
   var tileDimension = 75;
-
+  var gameState = 'playing';
   console.log(PIXI);
 
   var renderer = PIXI.autoDetectRenderer(
@@ -209,6 +209,7 @@
     }
 
     if(this.tile == gamemaker.gameboard.finish){
+      gameState = 'win';
       gamemaker.toFinish();
     }
     else if(this.tile == gamemaker.gameboard.start){
