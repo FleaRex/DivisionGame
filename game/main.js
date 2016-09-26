@@ -1,77 +1,75 @@
 "use strict";
 
-(function(){
-  var Container = PIXI.Container;
-  var Graphics = PIXI.Graphics;
-  var Text = PIXI.Text;
-  var Texture = PIXI.Texture;
-  var Sprite = PIXI.Sprite;
-  var tileDimension = 75;
-  var gameState = 'playing';
-  console.log(PIXI);
+console.log(PIXI);
+var Container = PIXI.Container;
+var Graphics = PIXI.Graphics;
+var Text = PIXI.Text;
+var Texture = PIXI.Texture;
+var Sprite = PIXI.Sprite;
 
-  var renderer = PIXI.autoDetectRenderer(
-    256, 256,
-    {antialias: false, transparent: false, resolution: 1}
-  );
+class Game{
+  constructor(){
+    this.tileDimension = 75;
+    this.gameState = 'playing';
+    this.setUpRenderer();
+    this.stage = new Container();
 
-  renderer.view.style.position = "absolute";
-  renderer.view.style.display = "block";
-  renderer.autoResize = true;
-  renderer.resize(window.innerWidth, window.innerHeight);
+    this.gamemaker = new BespokeGameMaker({'timesTables':[4,5,6,7,8,9,10,11,12],
+                                           'problemTables':[6,7,8,12],
+                                           'misconceptions':[
+                                                             [6,9,63],
+                                                             [4,6,26],
+                                                             [3,9,29],
+                                                             [8,6,84],
+                                                             [7,8,63]
+                                                            ],
+                                           'wrongAnswers':[[7,19],
+                                                           [7,31],
+                                                           [7,12]]
+                                          });
 
-  document.body.appendChild(renderer.view);
-
-  var stage = new Container();
-  stage.x = 40;
-  stage.y = 40;
 
 
-  var gamemaker = new BespokeGameMaker({'timesTables':[4,5,6,7,8,9,10,11,12],
-                                        'problemTables':[6,7,8,12],
-                                        'misconceptions':[
-                                                           [6,9,63],
-                                                           [4,6,26],
-                                                           [3,9,29],
-                                                           [8,6,84],
-                                                           [7,8,63]
-                                                         ],
-                                        'wrongAnswers':[[7,19],
-                                                        [7,31],
-                                                        [7,12]]
-                                       });
-
-  var tileTexture;
-  var startTexture;
-  var finishTexture;
-  var skaterTexture;
-  var brokenTexture;
-
-  loading();
-  gamemaker.createNewGame();
-  animate();
-
-  function loading(){
-    tileTexture = Texture.fromImage(['TileSprite.png']);
-    startTexture = Texture.fromImage(['StartSprite.png']);
-    finishTexture = Texture.fromImage(['FinishSprite.png']);
-    skaterTexture = Texture.fromImage(['SkaterSprite.png']);
-    brokenTexture = Texture.fromImage(['BrokenSprite.png']);
+    this.loading();
+    this.gamemaker.createNewGame();
+    this.animate();
   }
 
-  function animate() {
-    requestAnimationFrame(animate);
-    if(gamemaker.skater.tile == gamemaker.gameboard.finish){
-      gamemaker.createNewGame();
+  setUpRenderer(){
+    this.renderer = PIXI.autoDetectRenderer(
+      256, 256,
+      {antialias: false, transparent: false, resolution: 1}
+    );
+
+    this.renderer.view.style.position = "absolute";
+    this.renderer.view.style.display = "block";
+    this.renderer.autoResize = true;
+    this.renderer.resize(window.innerWidth, window.innerHeight);
+
+    document.body.appendChild(this.renderer.view);
+  }
+
+  loading(){
+    this.tileTexture = Texture.fromImage(['TileSprite.png']);
+    this.startTexture = Texture.fromImage(['StartSprite.png']);
+    this.finishTexture = Texture.fromImage(['FinishSprite.png']);
+    this.skaterTexture = Texture.fromImage(['SkaterSprite.png']);
+    this.brokenTexture = Texture.fromImage(['BrokenSprite.png']);
+  }
+
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
+    if(this.gamemaker.skater.tile == this.gamemaker.gameboard.finish){
+      this.gamemaker.createNewGame();
     }
-    drawGrid(gamemaker.gameboard, tileDimension);
-    drawSkater(gamemaker.skater, tileDimension);
-    renderer.render(stage);
+    this.drawGrid(this.gamemaker.gameboard, this.tileDimension);
+    this.drawSkater(this.gamemaker.skater, this.tileDimension);
+    this.renderer.render(this.stage);
   }
 
-  function drawSkater(activeSkater, dimension){
-    var skaterSprite = new Sprite(skaterTexture);
-    var numberText = new Text(gamemaker.skater.number,
+  drawSkater(activeSkater, dimension){
+    var skaterSprite = new Sprite(this.skaterTexture);
+    var numberText = new Text(this.gamemaker.skater.number,
       {
         fontFamily: 'Arial',
         fontSize: 44,
@@ -90,39 +88,39 @@
       skaterElement.scale.x = dimension/100.0;
       skaterElement.scale.y = dimension/100.0;
 
-      if(gamemaker.skater.tile == gamemaker.gameboard.start){
-        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
+      if(this.gamemaker.skater.tile == this.gamemaker.gameboard.start){
+        skaterElement.y = (this.gamemaker.gameboard.height * 0.5)*dimension;
         skaterElement.x = 0.5*dimension;
       }
-      else if(gamemaker.skater.tile == gamemaker.gameboard.finish){
-        skaterElement.y = (gamemaker.gameboard.height * 0.5)*dimension;
-        skaterElement.x = (1.5 + gamemaker.gameboard.width)*dimension;
+      else if(this.gamemaker.skater.tile == this.gamemaker.gameboard.finish){
+        skaterElement.y = (this.gamemaker.gameboard.height * 0.5)*dimension;
+        skaterElement.x = (1.5 + this.gamemaker.gameboard.width)*dimension;
       }
       else{
-        skaterElement.y = (gamemaker.skater.tile.i + 0.5)*dimension;
-        skaterElement.x = (gamemaker.skater.tile.j + 1.5)*dimension;
+        skaterElement.y = (this.gamemaker.skater.tile.i + 0.5)*dimension;
+        skaterElement.x = (this.gamemaker.skater.tile.j + 1.5)*dimension;
       }
 
-      stage.addChild(skaterElement);
-    });
+      this.stage.addChild(skaterElement);
+    }, this);
   }
 
-  function drawGrid(board, dimension){
-    stage.board = board;
-    var startSprite = new Sprite(startTexture);
+  drawGrid(board, dimension){
+    this.stage.board = board;
+    var startSprite = new Sprite(this.startTexture);
     startSprite.tile = board.start;
     startSprite.y = (board.height)*dimension * 0.5;
     startSprite.x = 0.5 * dimension;
     startSprite.tint = 0x00FF00;
-    startSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.start) != -1 ?
-                          0x00FF00 : 0x008800;
+    startSprite.tint = this.gamemaker.skater.findPossibleSquares().
+      indexOf(board.start) != -1 ? 0x00FF00 : 0x008800;
 
-    var finishSprite = new Sprite(finishTexture);
+    var finishSprite = new Sprite(this.finishTexture);
     finishSprite.tile = board.finish;
     finishSprite.y = (board.height)*dimension * 0.5;
     finishSprite.x = (board.width + 1.5)*dimension;
-    finishSprite.tint = gamemaker.skater.findPossibleSquares().indexOf(board.finish) != -1 ?
-                          0x00FF00 : 0x008800;
+    finishSprite.tint = this.gamemaker.skater.findPossibleSquares().
+      indexOf(board.finish) != -1 ? 0x00FF00 : 0x008800;
 
 
     [startSprite, finishSprite].forEach(function(tileElement){
@@ -130,31 +128,32 @@
       tileElement.anchor.y = 0.5;
       tileElement.scale.x = dimension/100.0;
       tileElement.scale.y = dimension/100.0;
-      tileElement.on('mousedown', clickTile);
-      tileElement.on('touchstart', clickTile);
+      // tileElement.on('mousedown', clickTile);
+      // tileElement.on('touchstart', clickTile);
       tileElement.buttonMode = true;
       tileElement.interactive = true;
-      stage.addChild(tileElement);
-    });
+      this.stage.addChild(tileElement);
+    }, this);
 
     for(var row = 0; row < board.height; row++){
       for(var column = 0; column < board.width; column++){
-        drawTile(board.grid[row][column], dimension, gamemaker.skater, stage);
+        this.drawTile(board.grid[row][column], dimension,
+                      this.gamemaker.skater, this.stage);
       }
     }
   }
 
-  function drawTile(tile, dimension, activeSkater, container){
+  drawTile(tile, dimension, activeSkater, container){
     var tileSprite;
     var textFill;
     var textStroke;
     if(tile.broken){
-      tileSprite = new Sprite(brokenTexture);
+      tileSprite = new Sprite(this.brokenTexture);
       textFill = '#999999';
       textStroke = '#333333';
     }
     else{
-      tileSprite = new Sprite(tileTexture);
+      tileSprite = new Sprite(this.tileTexture);
       textFill = '#3498db';
       textStroke = '#34495e';
       tileSprite.tile = tile;
@@ -168,8 +167,8 @@
       }
 
       tileSprite.tint = tintColour;
-      tileSprite.on('mousedown', clickTile);
-      tileSprite.on('touchstart', clickTile);
+      // tileSprite.on('mousedown', clickTile);
+      // tileSprite.on('touchstart', clickTile);
       tileSprite.buttonMode = true;
       tileSprite.interactive = true;
     }
@@ -195,32 +194,36 @@
     })
   }
 
-  function clickTile(eventData){
-    console.log("CLICK");
-    if(gamemaker.skater.findPossibleSquares().indexOf(this.tile) == -1){
-      console.log("Not in possible");
-      return;
-    }
-    if(this.tile.number % gamemaker.skater.number != 0){
-      console.log("Doesn't divide.");
-      gamemaker.wrongAnswer(this.tile);
-      gamemaker.destroyTile(this.tile);
-      return;
-    }
+  // function clickTile(eventData){
+  //   console.log("CLICK");
+  //   if(gamemaker.skater.findPossibleSquares().indexOf(this.tile) == -1){
+  //     console.log("Not in possible");
+  //     return;
+  //   }
+  //   if(this.tile.number % gamemaker.skater.number != 0){
+  //     console.log("Doesn't divide.");
+  //     gamemaker.wrongAnswer(this.tile);
+  //     gamemaker.destroyTile(this.tile);
+  //     return;
+  //   }
+  //
+  //   if(this.tile == gamemaker.gameboard.finish){
+  //     gameState = 'win';
+  //     gamemaker.toFinish();
+  //   }
+  //   else if(this.tile == gamemaker.gameboard.start){
+  //     gamemaker.toStart();
+  //   }
+  //   else{
+  //     gamemaker.rightAnswer(this.tile);
+  //   }
+  //   gamemaker.skater.tile = this.tile;
+  // }
 
-    if(this.tile == gamemaker.gameboard.finish){
-      gameState = 'win';
-      gamemaker.toFinish();
-    }
-    else if(this.tile == gamemaker.gameboard.start){
-      gamemaker.toStart();
-    }
-    else{
-      gamemaker.rightAnswer(this.tile);
-    }
-    gamemaker.skater.tile = this.tile;
-  }
+}
 
+(function(){
 
+  var game = new Game();
 
 }());
