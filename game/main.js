@@ -6,6 +6,7 @@ var Graphics = PIXI.Graphics;
 var Text = PIXI.Text;
 var Texture = PIXI.Texture;
 var Sprite = PIXI.Sprite;
+// var AssetLoader = PIXI.AssetLoader;
 
 class Game{
   constructor(){
@@ -50,11 +51,11 @@ class Game{
   }
 
   loading(){
-    this.tileTexture = Texture.fromImage(['TileSprite.png']);
-    this.startTexture = Texture.fromImage(['StartSprite.png']);
-    this.finishTexture = Texture.fromImage(['FinishSprite.png']);
-    this.skaterTexture = Texture.fromImage(['SkaterSprite.png']);
-    this.brokenTexture = Texture.fromImage(['BrokenSprite.png']);
+    this.tileTexture = Texture.fromImage(['assets/TileSprite.png']);
+    this.startTexture = Texture.fromImage(['assets/StartSprite.png']);
+    this.finishTexture = Texture.fromImage(['assets/FinishSprite.png']);
+    this.skaterTexture = Texture.fromImage(['assets/SkaterSprite.png']);
+    this.brokenTexture = Texture.fromImage(['assets/BrokenSprite.png']);
   }
 
   animate() {
@@ -224,6 +225,20 @@ class Game{
 
 (function(){
 
-  var game = new Game();
 
+  var loader = PIXI.loader;
+
+  loader.add([
+     'assets/BrokenSprite.png',
+     'assets/FinishSprite.png',
+     'assets/SkaterSprite.png',
+     'assets/StartSprite.png',
+     'assets/TileSprite.png'
+  ]).once('complete', onComplete);
+
+  function onComplete(){
+     var game = new Game();
+  }
+
+  loader.load();
 }());

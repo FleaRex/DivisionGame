@@ -6,3 +6,9 @@ skater divides.
 
 To use this you will need to host a server, for instance using http-server,
 which you can get from npm. (https://www.npmjs.com/package/http-server)
+
+
+TODO: Non multiples don't have to actually come from multiplication.
+      Maybe try and give some output about student understanding.
+      Formalisation as a game.
+      Nicer Graphics.
