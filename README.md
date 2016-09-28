@@ -8,7 +8,11 @@ To use this you will need to host a server, for instance using http-server,
 which you can get from npm. (https://www.npmjs.com/package/http-server)
 
 
-TODO: Non multiples don't have to actually come from multiplication.
-      Maybe try and give some output about student understanding.
+TODO: Maybe try and give some output about student understanding.
       Formalisation as a game.
       Nicer Graphics.
+      Unravel Game and Gamemaker
+      Reinstitute clicking on tiles.
+      Add menu systems.
+      Fix the crash on clicking very quickly.
+      Stop making so many tiles/Find a way to remove old tiles.
