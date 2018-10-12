@@ -1,7 +1,7 @@
 {
   "name": "divisiongame",
   "version": "1.0.0",
-  "description": "The idea is that there is a grid of numbers and a numbered skater on the left\r hand side. You pick a route across the grid of numbers that the number on the\r skater divides.",
+  "description": "The idea is that there is a grid of numbers and a numbered skater on the left hand side. You pick a route across the grid of numbers that the number on the skater divides.",
   "main": "index.js",
   "scripts": {
     "test": "exit 0"
