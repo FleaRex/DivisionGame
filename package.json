@@ -1,0 +1,19 @@
+{
+  "name": "divisiongame",
+  "version": "1.0.0",
+  "description": "The idea is that there is a grid of numbers and a numbered skater on the left\r hand side. You pick a route across the grid of numbers that the number on the\r skater divides.",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FleaRex/DivisionGame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FleaRex/DivisionGame/issues"
+  },
+  "homepage": "https://github.com/FleaRex/DivisionGame#readme"
+}

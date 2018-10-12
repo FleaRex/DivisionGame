@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - node
+deploy:
+  provider: s3
+  access_key_id: ${S3_ACCESS_KEY}
+  secret_access_key: ${S3_SECRET_ACCESS_KEY}
+  bucket: $S3_BUCKET
+  region: eu-west-2
+  acl: public_read
+  on:
+    branch: master
+    repo: FleaRex/DivisionGame
